@@ -1,8 +1,8 @@
 resource "aws_eks_node_group" "node_group" {
-  cluster_name    = data.aws_eks_cluster.cluster.id
+  cluster_name    = var.cluster_name
   node_group_name = var.node_group_name
-  node_role_arn   = data.aws_iam_role.worker_role.arn
-  subnet_ids      = data.aws_subnet_ids.private.ids
+  node_role_arn   = var.worker_role_arn
+  subnet_ids      = var.subnet_ids
 
   scaling_config {
     desired_size = var.scaling_config.desired_size
