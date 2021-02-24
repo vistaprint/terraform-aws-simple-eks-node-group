@@ -1,3 +1,3 @@
 data "aws_iam_role" "worker_role" {
-  name = "${data.aws_eks_cluster.cluster.id}-eks-worker-role"
+  name = "${var.cluster_name}-eks-worker-role"
 }

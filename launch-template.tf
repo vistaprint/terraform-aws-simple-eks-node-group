@@ -12,7 +12,7 @@ data "aws_ami" "ami" {
 resource "aws_launch_template" "worker_nodes" {
   count = var.use_calico_cni ? 1 : 0
 
-  name = "${data.aws_eks_cluster.cluster.id}-${var.node_group_name}"
+  name = "${var.cluster_name}-${var.node_group_name}"
 
   image_id = data.aws_ami.ami.id
 
@@ -48,7 +48,7 @@ resource "aws_launch_template" "worker_nodes" {
   }
 
   user_data = base64encode(templatefile("${path.module}/data/userdata.tpl", {
-    cluster_name               = data.aws_eks_cluster.cluster.id
+    cluster_name               = var.cluster_name
     cluster_endpoint           = data.aws_eks_cluster.cluster.endpoint
     certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
     bootstrap_extra_args       = "--use-max-pods false"
