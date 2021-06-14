@@ -23,6 +23,7 @@ resource "aws_launch_template" "worker_nodes" {
       volume_size           = 20
       volume_type           = "gp2"
       delete_on_termination = true
+      encrypted             = var.encrypt_ebs
     }
   }
 
