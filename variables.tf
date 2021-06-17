@@ -63,3 +63,8 @@ variable "worker_role_arn" {
 variable "subnet_ids" {
   type = list(string)
 }
+
+variable "encrypt_ebs" {
+  type    = bool
+  default = true
+}
