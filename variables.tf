@@ -68,8 +68,3 @@ variable "encrypt_ebs" {
   type    = bool
   default = true
 }
-
-variable "require_http_tokens" {
-  type    = bool
-  default = true
-}

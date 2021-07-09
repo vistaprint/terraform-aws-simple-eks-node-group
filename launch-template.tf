@@ -36,7 +36,7 @@ resource "aws_launch_template" "worker_nodes" {
 
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = var.require_http_tokens ? "required" : "optional"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 2
   }
 
