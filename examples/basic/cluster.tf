@@ -21,13 +21,9 @@ module "spot_node_group" {
 
   instance_types = [
     "t3a.medium",
-    "t3.medium",
     "t3a.large",
-    "t3.large",
     "t3a.xlarge",
-    "t3.xlarge",
     "t3a.2xlarge",
-    "t3.2xlarge"
   ]
 
   scaling_config = {
