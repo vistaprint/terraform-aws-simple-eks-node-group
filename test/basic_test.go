@@ -35,15 +35,13 @@ func TestTerraformBasicExample(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	assert.Regexp(t,
-		`^arn:aws:iam::.+:role\/simple-eks-integration-test-for-eks-node-group-eks-worker-role$`,
-		terraform.Output(t, terraformOptions, "worker_role_arn"),
+	assert.Equal(t,
+		"simple-eks-integration-test-for-eks-node-group:spot",
+		terraform.Output(t, terraformOptions, "node_group_id"),
 	)
 
-	assert.NotEmpty(t, terraform.Output(t, terraformOptions, "private_subnet_ids"))
-
 	assert.Regexp(t,
-		`^https:\/\/oidc\.eks\..+\.amazonaws\.com\/id\/.+$`,
-		terraform.Output(t, terraformOptions, "oidc_identity_provider_issuer"),
+		`^eks-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`,
+		terraform.Output(t, terraformOptions, "node_group_autoscaling_group_name"),
 	)
 }
