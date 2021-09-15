@@ -1,6 +1,11 @@
 package test
 
 import (
+	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/eks"
+	"log"
 	"os"
 	"testing"
 
@@ -35,13 +40,28 @@ func TestTerraformBasicExample(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	assert.Equal(t,
-		"simple-eks-integration-test-for-eks-node-group:spot",
-		terraform.Output(t, terraformOptions, "node_group_id"),
+	checkNodeGroupExists(t)
+}
+
+func checkNodeGroupExists(t *testing.T) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client := eks.NewFromConfig(cfg)
+
+	output, err := client.ListNodegroups(
+		context.TODO(),
+		&eks.ListNodegroupsInput{
+			ClusterName: aws.String("simple-eks-integration-test-for-eks-node-group"),
+		},
 	)
 
-	assert.Regexp(t,
-		`^eks-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`,
-		terraform.Output(t, terraformOptions, "node_group_autoscaling_group_name"),
-	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	assert.Len(t, output.Nodegroups, 1)
+	assert.Equal(t, "on-demand", output.Nodegroups[0])
 }

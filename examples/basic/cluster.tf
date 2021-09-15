@@ -11,7 +11,7 @@ module "cluster" {
   profile = var.aws_profile
 }
 
-module "on_deman_node_group" {
+module "on_demand_node_group" {
   source = "../.."
 
   cluster_name       = "simple-eks-integration-test-for-eks-node-group"
