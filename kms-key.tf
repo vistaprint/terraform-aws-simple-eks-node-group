@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "ebs_encryption_key" {
-  count = var.encrypt_ebs? 1 : 0
+  count = var.encrypt_ebs ? 1 : 0
 
   description             = "Encryption Key for EBS volumes"
   deletion_window_in_days = 7
