@@ -42,15 +42,15 @@ go test -v -timeout 30m
 
 ### Calico
 
-- https://docs.projectcalico.org/getting-started/kubernetes/managed-public-cloud/eks
-- https://docs.projectcalico.org/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet
-- https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#EIP_Disable_SrcDestCheck
-- https://github.com/awsdocs/amazon-eks-user-guide/blob/master/doc_source/calico.md
-- https://github.com/awsdocs/amazon-eks-user-guide/blob/master/doc_source/cni-custom-network.md
-- https://github.com/awslabs/amazon-eks-ami/blob/master/files/eni-max-pods.txt
-- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html#AvailableIpPerENI
+- <https://docs.projectcalico.org/getting-started/kubernetes/managed-public-cloud/eks>
+- <https://docs.projectcalico.org/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet>
+- <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#EIP_Disable_SrcDestCheck>
+- <https://github.com/awsdocs/amazon-eks-user-guide/blob/master/doc_source/calico.md>
+- <https://github.com/awsdocs/amazon-eks-user-guide/blob/master/doc_source/cni-custom-network.md>
+- <https://github.com/awslabs/amazon-eks-ami/blob/master/files/eni-max-pods.txt>
+- <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html#AvailableIpPerENI>
 
 Launch templates are needed for Calico:
 
-- https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html
-- https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/
+- <https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html>
+- <https://aws.amazon.com/blogs/containers/introducing-launch-template-and-custom-ami-support-in-amazon-eks-managed-node-groups/>

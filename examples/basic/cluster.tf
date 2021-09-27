@@ -5,7 +5,6 @@ module "cluster" {
   cluster_name    = "simple-eks-integration-test-for-eks-node-group"
   cluster_version = "1.20"
   vpc_name        = var.vpc_name
-  log_group_name  = "a-test-log-group-name"
 
   region  = var.aws_region
   profile = var.aws_profile
