@@ -29,7 +29,7 @@ resource "aws_kms_key" "ebs_encryption_key" {
         "Condition" : {
           "StringEquals" : {
             "kms:CallerAccount" : data.aws_caller_identity.current.account_id,
-            "kms:ViaService" : "ec2.eu-west-1.amazonaws.com"
+            "kms:ViaService" : "ec2.${var.region}.amazonaws.com"
           }
         }
       },
