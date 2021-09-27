@@ -68,3 +68,8 @@ variable "encrypt_ebs" {
   type    = bool
   default = true
 }
+
+variable "volume_type" {
+  type    = string
+  default = "gp3"
+}
