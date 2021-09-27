@@ -3,6 +3,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_kms_key" "ebs_encryption_key" {
   description             = "Encryption Key for EBS volumes"
   deletion_window_in_days = 7
+  enable_key_rotation     = true
 
   policy = jsonencode({
     "Version": "2012-10-17",
