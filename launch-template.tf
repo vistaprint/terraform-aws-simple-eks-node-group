@@ -24,7 +24,7 @@ resource "aws_launch_template" "worker_nodes" {
       volume_type           = var.volume_type
       delete_on_termination = true
       encrypted             = var.encrypt_ebs
-      kms_key_id            = var.encrypt_ebs ? aws_kms_key.ebs_encryption_key.arn : null
+      kms_key_id            = var.encrypt_ebs ? aws_kms_key.ebs_encryption_key[0].arn : null
     }
   }
 
