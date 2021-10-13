@@ -1,4 +1,6 @@
 locals {
+  is_launch_template_needed = var.use_calico_cni || var.encrypt_ebs || var.volume_type != null
+
   x86_64_ami = "amazon-eks-node-${var.node_group_version}-v*"
   arm64_ami  = "amazon-eks-arm64-node-${var.node_group_version}-v*"
 }
@@ -10,7 +12,7 @@ data "aws_ami" "ami" {
 }
 
 resource "aws_launch_template" "worker_nodes" {
-  count = var.use_calico_cni ? 1 : 0
+  count = local.is_launch_template_needed ? 1 : 0
 
   name = "${var.cluster_name}-${var.node_group_name}"
 
@@ -53,7 +55,8 @@ resource "aws_launch_template" "worker_nodes" {
     cluster_name               = var.cluster_name
     cluster_endpoint           = data.aws_eks_cluster.cluster.endpoint
     certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
-    bootstrap_extra_args       = "--use-max-pods false"
+    bootstrap_extra_args       = var.use_calico_cni ? "--use-max-pods false" : ""
+    disable_source_dest_checks = var.use_calico_cni
     ami_id                     = data.aws_ami.ami.id
     node_group_name            = var.node_group_name
     capacity_type              = local.capacity_type

@@ -2,12 +2,13 @@ package test
 
 import (
 	"context"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/eks"
 	"log"
 	"os"
 	"testing"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/eks"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
@@ -40,10 +41,12 @@ func TestTerraformBasicExample(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	checkNodeGroupExists(t)
+	checkNodeGroupExists(t, "basic")
+	checkNodeGroupExists(t, "calico")
+	checkNodeGroupExists(t, "encrypt-ebs")
 }
 
-func checkNodeGroupExists(t *testing.T) {
+func checkNodeGroupExists(t *testing.T, nodeGroupName string) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
 	if err != nil {
 		log.Fatal(err)
@@ -62,6 +65,6 @@ func checkNodeGroupExists(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	assert.Len(t, output.Nodegroups, 1)
-	assert.Equal(t, "on-demand", output.Nodegroups[0])
+	assert.GreaterOrEqual(t, len(output.Nodegroups), 1)
+	assert.Contains(t, output.Nodegroups, nodeGroupName)
 }

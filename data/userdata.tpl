@@ -19,13 +19,16 @@ set -ex
     ${bootstrap_extra_args} \
     '${cluster_name}'
 
-# Disable source/dest checks
-# (see https://docs.projectcalico.org/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet)
+if ${disable_source_dest_checks}
+then
+    # Disable source/dest checks
+    # (see https://docs.projectcalico.org/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet)
 
-export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
-export REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
+    export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+    export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
+    export REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
 
-aws ec2 modify-instance-attribute --instance-id $INSTANCE_ID --no-source-dest-check --region $REGION
+    aws ec2 modify-instance-attribute --instance-id $INSTANCE_ID --no-source-dest-check --region $REGION
+fi
 
 --//--
