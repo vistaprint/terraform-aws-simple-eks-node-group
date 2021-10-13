@@ -12,11 +12,11 @@ resource "aws_eks_node_group" "node_group" {
 
   instance_types = var.instance_types
   capacity_type  = local.capacity_type
-  version        = var.use_calico_cni ? null : var.node_group_version
-  ami_type       = var.use_calico_cni ? null : local.ami_type
+  version        = local.is_launch_template_needed ? null : var.node_group_version
+  ami_type       = local.is_launch_template_needed ? null : local.ami_type
 
   dynamic "launch_template" {
-    for_each = var.use_calico_cni ? [1] : []
+    for_each = local.is_launch_template_needed ? [1] : []
     content {
       id      = aws_launch_template.worker_nodes[0].id
       version = aws_launch_template.worker_nodes[0].latest_version
