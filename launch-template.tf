@@ -55,7 +55,8 @@ resource "aws_launch_template" "worker_nodes" {
     cluster_name               = var.cluster_name
     cluster_endpoint           = data.aws_eks_cluster.cluster.endpoint
     certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
-    bootstrap_extra_args       = "--use-max-pods false"
+    bootstrap_extra_args       = var.use_calico_cni ? "--use-max-pods false" : ""
+    disable_source_dest_checks = var.use_calico_cni
     ami_id                     = data.aws_ami.ami.id
     node_group_name            = var.node_group_name
     capacity_type              = local.capacity_type
