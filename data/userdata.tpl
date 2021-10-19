@@ -24,9 +24,18 @@ then
     # Disable source/dest checks
     # (see https://docs.projectcalico.org/reference/public-cloud/aws#routing-traffic-within-a-single-vpc-subnet)
 
-    export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-    export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
-    export REGION=$(curl http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
+    export TOKEN=$(
+        curl -s -X PUT -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
+        "http://169.254.169.254/latest/api/token"
+    )
+    export INSTANCE_ID=$(
+        curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+        http://169.254.169.254/latest/meta-data/instance-id
+    )
+    export REGION=$(
+        curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+        http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}'
+    )
 
     aws ec2 modify-instance-attribute --instance-id $INSTANCE_ID --no-source-dest-check --region $REGION
 fi
