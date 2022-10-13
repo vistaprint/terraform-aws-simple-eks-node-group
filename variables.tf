@@ -59,6 +59,11 @@ variable "subnet_ids" {
   type = list(string)
 }
 
+variable "enable_high_pod_density" {
+  type    = bool
+  default = false
+}
+
 variable "encrypt_ebs" {
   type    = bool
   default = true

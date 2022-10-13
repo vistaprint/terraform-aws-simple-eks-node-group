@@ -13,7 +13,6 @@ Content-Type: text/x-shellscript; charset="us-ascii"
 set -ex
 
 /etc/eks/bootstrap.sh \
-    --kubelet-extra-args '--max-pods=110 --node-labels=eks.amazonaws.com/nodegroup-image=${ami_id},eks.amazonaws.com/capacityType=${capacity_type},eks.amazonaws.com/nodegroup=${node_group_name}' \
     --b64-cluster-ca '${certificate_authority_data}' \
     --apiserver-endpoint '${cluster_endpoint}' \
     ${bootstrap_extra_args} \
