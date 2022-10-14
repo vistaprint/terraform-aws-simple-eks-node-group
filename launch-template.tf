@@ -1,8 +1,31 @@
 locals {
-  is_launch_template_needed = var.use_calico_cni || var.encrypt_ebs || var.volume_type != null
+  is_launch_template_needed = var.encrypt_ebs || var.volume_type != null
 
   x86_64_ami = "amazon-eks-node-${var.node_group_version}-v*"
   arm64_ami  = "amazon-eks-arm64-node-${var.node_group_version}-v*"
+
+  node_labels = "--node-labels=${join(",", [
+    "eks.amazonaws.com/nodegroup-image=${data.aws_ami.ami.id}",
+    "eks.amazonaws.com/capacityType=${local.capacity_type}",
+    "eks.amazonaws.com/nodegroup=${var.node_group_name}"
+  ])}"
+
+  kubelet_extra_args = "--kubelet-extra-args '${join(" ", concat(
+    [local.node_labels],
+    # TODO: instances with more than 30 vCPUs have a larger value for max-pods.
+    #  Let's compute the value instead of hardcoding it.
+    #  (see https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/)
+    var.enable_high_pod_density ? ["--max-pods=110"] : []
+  ))}'"
+
+  kubernetes_network_config = data.aws_eks_cluster.cluster.kubernetes_network_config[0]
+
+  bootstrap_extra_args = join(" ", concat(
+    var.enable_high_pod_density ? ["--use-max-pods false"] : [],
+    local.kubernetes_network_config.ip_family == "ipv6" ? ["--ip-family ipv6"] : [],
+    local.kubernetes_network_config.ip_family == "ipv6" ? ["--service-ipv6-cidr ${local.kubernetes_network_config.service_ipv6_cidr}"] : [],
+    [local.kubelet_extra_args]
+  ))
 }
 
 data "aws_ami" "ami" {
@@ -41,6 +64,7 @@ resource "aws_launch_template" "worker_nodes" {
     http_endpoint               = "enabled"
     http_tokens                 = "required"
     http_put_response_hop_limit = 2
+    http_protocol_ipv6          = local.kubernetes_network_config.ip_family == "ipv6" ? "enabled" : "disabled"
   }
 
   dynamic "tag_specifications" {
@@ -55,10 +79,6 @@ resource "aws_launch_template" "worker_nodes" {
     cluster_name               = var.cluster_name
     cluster_endpoint           = data.aws_eks_cluster.cluster.endpoint
     certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
-    bootstrap_extra_args       = var.use_calico_cni ? "--use-max-pods false" : ""
-    disable_source_dest_checks = var.use_calico_cni
-    ami_id                     = data.aws_ami.ami.id
-    node_group_name            = var.node_group_name
-    capacity_type              = local.capacity_type
+    bootstrap_extra_args       = local.bootstrap_extra_args
   }))
 }

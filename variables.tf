@@ -51,17 +51,35 @@ variable "architecture" {
   }
 }
 
-variable "use_calico_cni" {
-  type    = bool
-  default = false
-}
-
 variable "worker_role_arn" {
   type = string
 }
 
 variable "subnet_ids" {
   type = list(string)
+}
+
+variable "enable_high_pod_density" {
+  type    = bool
+  default = false
+
+  description = <<-EOT
+    Nodes in EKS clusters can only host a limited amount of pods. The number
+    of network interfaces in an EC2 instance is what introduces this limit.
+    As this limit is quite small (e.g., 29 pods for an m5.large instance), AWS
+    came up with a solution (prefix delegation) to increase the pod density in
+    EKS nodes.
+
+    By enabling this option, each node will be able to host a signficantly
+    larger amount of pods (e.g., 110 pods for an m5.large instance).
+
+    While prefix delegation works for IPv4-based clusters, this module chooses
+    to only support it for IPv6-based ones, for simplicity reasons.
+
+    For more details see:
+      - https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/
+      - https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+  EOT
 }
 
 variable "encrypt_ebs" {

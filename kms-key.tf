@@ -51,7 +51,9 @@ resource "aws_kms_key" "ebs_encryption_key" {
           "kms:Get*",
           "kms:Delete*",
           "kms:ScheduleKeyDeletion",
-          "kms:CancelKeyDeletion"
+          "kms:CancelKeyDeletion",
+          "kms:TagResource",
+          "kms:UntagResource"
         ],
         "Resource" : "*"
       }
