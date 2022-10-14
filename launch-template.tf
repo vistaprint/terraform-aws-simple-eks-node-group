@@ -12,8 +12,9 @@ locals {
 
   kubelet_extra_args = "--kubelet-extra-args '${join(" ", concat(
     [local.node_labels],
-    # TODO: some instances have a different value for max-pods.
-    #   Let's compute the value instead of hardcoding it.
+    # TODO: instances with more than 30 vCPUs have a larger value for max-pods.
+    #  Let's compute the value instead of hardcoding it.
+    #  (see https://aws.amazon.com/blogs/containers/amazon-vpc-cni-increases-pods-per-node-limits/)
     var.enable_high_pod_density ? ["--max-pods=110"] : []
   ))}'"
 
