@@ -92,7 +92,7 @@ variable "volume_type" {
   default = "gp3"
 }
 
-variable "extra_configuration" {
+variable "launch_template_custom_userdata" {
   type        = string
   description = "Extra configuration executed after bootstraping the node"
   default     = ""

@@ -18,6 +18,6 @@ set -ex
     ${bootstrap_extra_args} \
     '${cluster_name}'
 
-${extra_configuration}
+${launch_template_custom_userdata}
 
 --//--
