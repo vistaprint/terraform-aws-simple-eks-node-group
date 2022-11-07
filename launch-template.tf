@@ -80,5 +80,6 @@ resource "aws_launch_template" "worker_nodes" {
     cluster_endpoint           = data.aws_eks_cluster.cluster.endpoint
     certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
     bootstrap_extra_args       = local.bootstrap_extra_args
+    extra_configuration        = var.extra_configuration
   }))
 }

@@ -18,4 +18,6 @@ set -ex
     ${bootstrap_extra_args} \
     '${cluster_name}'
 
+${extra_configuration}
+
 --//--

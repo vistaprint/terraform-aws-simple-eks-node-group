@@ -91,3 +91,9 @@ variable "volume_type" {
   type    = string
   default = "gp3"
 }
+
+variable "extra_configuration" {
+  type        = string
+  description = "Extra configuration executed after bootstraping the node"
+  default     = ""
+}
