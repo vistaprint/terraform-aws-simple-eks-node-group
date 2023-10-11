@@ -129,6 +129,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+.terraform.lock.hcl
+
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
