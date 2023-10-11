@@ -43,8 +43,8 @@ func TestTerraformBasicExample(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	checkNodeGroupExists(t, "basic")
-	checkNodeGroupExists(t, "calico")
 	checkNodeGroupExists(t, "encrypt-ebs")
+	checkNodeGroupExists(t, "custom-ami")
 }
 
 func checkNodeGroupExists(t *testing.T, nodeGroupName string) {

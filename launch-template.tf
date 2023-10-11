@@ -4,8 +4,10 @@ locals {
   x86_64_ami = "amazon-eks-node-${var.node_group_version}-v*"
   arm64_ami  = "amazon-eks-arm64-node-${var.node_group_version}-v*"
 
+  ami_id = var.image_id != null ? var.image_id : data.aws_ami.ami.0.id
+
   node_labels = "--node-labels=${join(",", [
-    "eks.amazonaws.com/nodegroup-image=${data.aws_ami.ami.id}",
+    "eks.amazonaws.com/nodegroup-image=${local.ami_id}",
     "eks.amazonaws.com/capacityType=${local.capacity_type}",
     "eks.amazonaws.com/nodegroup=${var.node_group_name}"
   ])}"
@@ -29,6 +31,8 @@ locals {
 }
 
 data "aws_ami" "ami" {
+  count = var.image_id == null ? 1 : 0
+
   most_recent = true
   name_regex  = var.architecture == "x86_64" ? local.x86_64_ami : local.arm64_ami
   owners      = ["amazon"]
@@ -39,7 +43,7 @@ resource "aws_launch_template" "worker_nodes" {
 
   name = "${var.cluster_name}-${var.node_group_name}"
 
-  image_id = data.aws_ami.ami.id
+  image_id = local.ami_id
 
   block_device_mappings {
     device_name = "/dev/xvda"

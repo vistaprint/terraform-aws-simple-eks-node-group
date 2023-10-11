@@ -51,6 +51,13 @@ variable "architecture" {
   }
 }
 
+variable "image_id" {
+  type    = string
+  default = null
+
+  description = "AMI id to use for the node group"
+}
+
 variable "worker_role_arn" {
   type = string
 }
