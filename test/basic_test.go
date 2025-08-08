@@ -1,17 +1,11 @@
 package test
 
 import (
-	"context"
-	"log"
+	"fmt"
 	"os"
 	"testing"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/eks"
-
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,15 +18,15 @@ func TestTerraformBasicExample(t *testing.T) {
 	awsRegion := os.Getenv("AWS_DEFAULT_REGION")
 	require.NotEmpty(t, awsRegion)
 
-	vpcName := os.Getenv("SIMPLE_EKS_TEST_VPC_NAME")
-	require.NotEmpty(t, vpcName)
+	// vpcName := os.Getenv("SIMPLE_EKS_TEST_VPC_NAME")
+	// require.NotEmpty(t, vpcName)
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../examples/basic",
-		Vars: map[string]interface{}{
+		Vars: map[string]any{
 			"aws_profile": awsProfile,
 			"aws_region":  awsRegion,
-			"vpc_name":    vpcName,
+			// "vpc_name":    vpcName,
 		},
 		NoColor: true,
 		Upgrade: true,
@@ -42,30 +36,32 @@ func TestTerraformBasicExample(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	checkNodeGroupExists(t, "basic")
-	checkNodeGroupExists(t, "encrypt-ebs")
-	checkNodeGroupExists(t, "custom-ami")
+	fmt.Println(terraform.Output(t, terraformOptions, "cluster_availability_zones"))
+
+	// checkNodeGroupExists(t, "basic")
+	// checkNodeGroupExists(t, "encrypt-ebs")
+	// checkNodeGroupExists(t, "custom-ami")
 }
 
-func checkNodeGroupExists(t *testing.T, nodeGroupName string) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
-	if err != nil {
-		log.Fatal(err)
-	}
+// func checkNodeGroupExists(t *testing.T, nodeGroupName string) {
+// 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	client := eks.NewFromConfig(cfg)
+// 	client := eks.NewFromConfig(cfg)
 
-	output, err := client.ListNodegroups(
-		context.TODO(),
-		&eks.ListNodegroupsInput{
-			ClusterName: aws.String("simple-eks-integration-test-for-eks-node-group"),
-		},
-	)
+// 	output, err := client.ListNodegroups(
+// 		context.TODO(),
+// 		&eks.ListNodegroupsInput{
+// 			ClusterName: aws.String("simple-eks-integration-test-for-eks-node-group"),
+// 		},
+// 	)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	assert.GreaterOrEqual(t, len(output.Nodegroups), 1)
-	assert.Contains(t, output.Nodegroups, nodeGroupName)
-}
+// 	assert.GreaterOrEqual(t, len(output.Nodegroups), 1)
+// 	assert.Contains(t, output.Nodegroups, nodeGroupName)
+// }

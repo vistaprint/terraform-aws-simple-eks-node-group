@@ -1,4 +1,24 @@
 locals {
-  capacity_type = var.use_spot_instances ? "SPOT" : "ON_DEMAND"
-  ami_type      = var.architecture == "x86_64" ? "AL2_x86_64" : "AL2_ARM_64"
+  requirements = compact([
+    var.instance_categories != null ? {
+      key      = "eks.amazonaws.com/instance-category"
+      operator = "In"
+      values   = var.instance_categories
+    } : null,
+    var.instance_cpus != null ? {
+      key      = "eks.amazonaws.com/instance-cpu"
+      operator = "In"
+      values   = var.instance_cpus
+    } : null,
+    var.availability_zones != null ? {
+      key      = "topology.kubernetes.io/zone"
+      operator = "In"
+      values   = var.availability_zones
+    } : null,
+    {
+      key      = "kubernetes.io/arch"
+      operator = "In"
+      values   = var.instance_architectures
+    }
+  ])
 }
